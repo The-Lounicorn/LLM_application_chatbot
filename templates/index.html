@@ -1,47 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--general infomraion of the webpage-->
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chatbot</title>
-    <meta name="author" content="J.C. Chen">
-    <!-- <link rel="stylesheet" href="css/style.css" /> -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- <link rel="shortcut icon" href='favicon.ico' type="image/x-icon">
-    <link rel="icon" href='favicon.ico' type="image/x-icon"> -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-  </head>
-  <!--end general information-->
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot</title>
+  <meta name="author" content="J.C. Chen" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+</head>
 
-    <!-- <header>
-      <div class="color-block"></div>
-    </header> -->
-
-    <!--Chatbot container-->
-    <main>  
-      <div class="chatbot">
+<body>
+  <main>
+    <div class="chatbot">
         <div class="chat-header">
-          <h1>My LLM</h1>
+          <h1><span class="emoji-icon">🤖</span> Meet ChatterBot</h1>
+          <h2>A chat buddy for curious minds</h2><br>
+          <p>Say hello or ask a question.</p>
         </div>
-        <div class="header-sub-text">
-          <p>Copyright © JC 2023 - Created by JC with <a class="purple">❤</a></p>
-        </div>
-
-        <div class="spacer" id="messages-container"></div>
-        
+      
+        <div class="chat-messages" id="messages-container"></div>
+      
         <form class="chat-form" id="message-form">
-          <textarea type="text" id="message-input" placeholder="Send a message..."></textarea>
-          <button type="submit">➤</button> 
+          <textarea id="message-input" placeholder="Send a message..."></textarea>
+          <div class="button-wrapper">
+            <button type="submit" class="chat-button">Submit 🚀</button>
+          </div>
         </form>
+      
+        <div class="button-wrapper">
+          <button id="clear-chat" class="chat-button">Clear Chat 🧹</button>
+        </div>
+      
+        <div class="header-sub-text">
+          <br><p style="text-align: center; font-size: 1.1em; font-weight: bold;">
+            Copyright © 2025 — Created by Aunt Lou with <span class="pink">❤</span>
+          </p>
+        </div>
       </div>
-    </main>
-    <!--end chatbot container-->
+      
+     
+  </main>
 
-    <!--Javascript to call the language model-->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <!--end Javascript to call the language model-->
-  </body>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
 </html>

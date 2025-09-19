@@ -1,66 +1,89 @@
-const messagesContainer = document.getElementById('messages-container');
-const messageForm = document.getElementById('message-form');
-const messageInput = document.getElementById('message-input');
+const form = document.getElementById('message-form');
+const input = document.getElementById('message-input');
+const container = document.getElementById('messages-container');
 
-const addMessage = (message, role, imgSrc) => {
-  const messageElement = document.createElement('div');
-  const textElement = document.createElement('p');
-  messageElement.className = `message ${role}`;
-  const imgElement = document.createElement('img');
-  imgElement.src = imgSrc;
-  messageElement.appendChild(imgElement);
-  textElement.innerText = message;
-  messageElement.appendChild(textElement);
-  messagesContainer.appendChild(messageElement);
+// Submit via Enter key
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    form.dispatchEvent(new Event('submit')); // Trigger form submission
+  }
+});
 
-  const clearDiv = document.createElement("div");
-  clearDiv.style.clear = "both";
-  messagesContainer.appendChild(clearDiv);
-};
+// Submit via Ask Question button
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-const sendMessage = async (message) => {
-  addMessage(message, 'user', '../static/user.jpeg');
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
 
-  const loadingElement = document.createElement('div');
-  const loadingtextElement = document.createElement('p');
-  loadingElement.className = `loading-animation`;
-  loadingtextElement.className = `loading-text`;
-  loadingtextElement.innerText = 'Loading....Please wait';
-  messagesContainer.appendChild(loadingElement);
-  messagesContainer.appendChild(loadingtextElement);
+  appendMessage('user', userMessage);
+  input.value = '';
+
+  const thinkingBubble = showThinking();
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/chatbot', {
+    const response = await fetch('/chatbot', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ prompt: message })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: userMessage })
     });
 
     const data = await response.json();
+    container.removeChild(thinkingBubble);
 
-    loadingElement.remove();
-    loadingtextElement.remove();
-
-    if (data.error) {
-      addMessage("Error: " + data.error, 'error', '../static/Error.png');
-    } else {
-      addMessage(data.response, 'aibot', '../static/Bot_logo.png');
+    if (!response.ok || !data.response) {
+      throw new Error(data.error || 'Sorry, something went wrong.');
     }
 
-  } catch (error) {
-    loadingElement.remove();
-    loadingtextElement.remove();
-    addMessage("Fetch error: " + error.message, 'error', '../static/Error.png');
+    appendMessage('bot', data.response);
+  } catch (err) {
+    console.error('Error:', err);
+    container.removeChild(thinkingBubble);
+    appendMessage('bot', err.message || 'Oops! Something went wrong.');
   }
-};
+});
 
-messageForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const message = messageInput.value.trim();
-  if (message !== '') {
-    messageInput.value = '';
-    await sendMessage(message);
-  }
+// Append message with emoji avatar
+function appendMessage(sender, message) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'message ' + sender;
+
+  const avatar = document.createElement('span');
+  avatar.className = 'emoji-avatar';
+  avatar.textContent = sender === 'user' ? '🦖' : '🤖';
+
+  const bubble = document.createElement('p');
+  bubble.textContent = message;
+
+  wrapper.appendChild(avatar);
+  wrapper.appendChild(bubble);
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+}
+
+// Show spinning brain while bot is thinking
+function showThinking() {
+  const thinkingWrapper = document.createElement('div');
+  thinkingWrapper.className = 'message bot thinking';
+
+  const avatar = document.createElement('span');
+  avatar.className = 'emoji-avatar spinning-brain';
+  avatar.textContent = '🧠';
+
+  const bubble = document.createElement('p');
+  bubble.className = 'loading-text';
+  bubble.textContent = 'Thinking...';
+
+  thinkingWrapper.appendChild(avatar);
+  thinkingWrapper.appendChild(bubble);
+  container.appendChild(thinkingWrapper);
+  container.scrollTop = container.scrollHeight;
+
+  return thinkingWrapper;
+}
+
+// Clear chat button
+document.getElementById('clear-chat').addEventListener('click', () => {
+  container.innerHTML = '';
 });
