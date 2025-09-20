@@ -2,6 +2,9 @@ const form = document.getElementById('message-form');
 const input = document.getElementById('message-input');
 const container = document.getElementById('messages-container');
 
+// Replace this with your Render backend URL
+const BACKEND_URL = 'https://chatterbot-backend.onrender.com/chatbot';
+
 // Submit via Enter key
 input.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -23,7 +26,7 @@ form.addEventListener('submit', async (e) => {
   const thinkingBubble = showThinking();
 
   try {
-    const response = await fetch('/chatbot', {
+    const response = await fetch(BACKEND_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: userMessage })
