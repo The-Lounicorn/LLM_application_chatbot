@@ -2,18 +2,18 @@ const form = document.getElementById('message-form');
 const input = document.getElementById('message-input');
 const container = document.getElementById('messages-container');
 
-// Replace this with your Render backend URL
+// Render backend URL
 const BACKEND_URL = 'https://chatterbot-backend.onrender.com/chatbot';
 
 // Submit via Enter key
 input.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
-    form.dispatchEvent(new Event('submit')); // Trigger form submission
+    form.dispatchEvent(new Event('submit'));
   }
 });
 
-// Submit via Ask Question button
+// Submit via Submit button
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -65,7 +65,7 @@ function appendMessage(sender, message) {
   container.scrollTop = container.scrollHeight;
 }
 
-// Show spinning brain while bot is thinking
+// Show thinking bubble
 function showThinking() {
   const thinkingWrapper = document.createElement('div');
   thinkingWrapper.className = 'message bot thinking';
@@ -86,7 +86,7 @@ function showThinking() {
   return thinkingWrapper;
 }
 
-// Clear chat button
+// Clear chat
 document.getElementById('clear-chat').addEventListener('click', () => {
   container.innerHTML = '';
 });
